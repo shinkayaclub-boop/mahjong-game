@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>麻雀 - Babylon.js版</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <!-- Babylon.js -->
+    <script src="https://cdn.babylonjs.com/babylon.js"></script>
+    <script src="https://cdn.babylonjs.com/loaders/babylonjs.loaders.min.js"></script>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- ログイン画面 -->
+    <div id="lobby-screen">
+        <div class="login-panel">
+            <h1>本格麻雀</h1>
+            <input type="text" id="username-input" placeholder="名前を入力">
+            <button onclick="joinGame()">卓に付く</button>
+        </div>
+    </div>
+
+    <!-- ゲーム画面 -->
+    <div id="game-container" style="display: none;">
+        <!-- Babylon.jsキャンバス -->
+        <canvas id="renderCanvas"></canvas>
+
+        <!-- 上部HUD -->
+        <div id="top-hud">
+            <div class="hud-slot" id="player-top">
+                <div class="avatar"></div>
+                <div class="player-info">
+                    <div class="player-name">南 伊藤奈美絵</div>
+                    <div class="player-score">27000点</div>
+                </div>
+            </div>
+            <div class="round-info">対局レベル 1</div>
+            <div class="hud-slot" id="player-left">
+                <div class="avatar"></div>
+                <div class="player-info">
+                    <div class="player-name">西 上尾留二</div>
+                    <div class="player-score">25000点</div>
+                </div>
+            </div>
+            <div class="hud-slot" id="player-right">
+                <div class="avatar"></div>
+                <div class="player-info">
+                    <div class="player-name">東 岡村美香</div>
+                    <div class="player-score">25000点</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 下部HUD -->
+        <div id="bottom-hud">
+            <div class="left-section">
+                <button class="sys-btn" onclick="location.reload()">タイトルへ</button>
+                <div class="my-player-panel">
+                    <div class="my-avatar"></div>
+                    <div class="my-info">
+                        <div class="my-name">北 あなた</div>
+                        <div class="my-score">25000</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="center-section">
+                <div class="round-display">
+                    <div class="round-text">東一局</div>
+                    <div class="sticks">🀄 00 🕙 00</div>
+                </div>
+            </div>
+
+            <div class="right-section">
+                <div class="action-buttons">
+                    <button class="action-btn">ポン</button>
+                    <button class="action-btn">カン</button>
+                    <button class="action-btn">チー</button>
+                    <button class="action-btn">ツモ</button>
+                    <button class="action-btn">ロン</button>
+                    <button class="action-btn">リーチ</button>
+                    <button class="action-btn">パス</button>
+                </div>
+                <button class="sys-btn help-btn">ヘルプ</button>
+                <button class="sys-btn">ゲーム設定</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/game.js"></script>
+    <script>
+        function joinGame() {
+            const name = document.getElementById('username-input').value;
+            if (!name) return;
+            window.socket.emit('join_game', { username: name });
+        }
+    </script>
+</body>
+</html>
